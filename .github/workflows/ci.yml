@@ -1,0 +1,55 @@
+name: ETL Test Suite
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: pip install -r requirements.txt
+      - name: Set up databases
+        run: |
+          psql -h localhost -U postgres -c "CREATE DATABASE retail_source;"
+          psql -h localhost -U postgres -c "CREATE DATABASE retail_dw;"
+          psql -h localhost -U postgres -d retail_source -f sql/01_create_source.sql
+          psql -h localhost -U postgres -d retail_dw -f sql/03_create_dw.sql
+        env:
+          PGPASSWORD: postgres
+      - name: Add unique constraint
+        run: psql -h localhost -U postgres -d retail_dw -c "ALTER TABLE dim_product ADD CONSTRAINT unique_product_id UNIQUE (product_id);"
+        env:
+          PGPASSWORD: postgres
+      - name: Generate data
+        run: python data/generate_source_data.py
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
+      - name: Run ETL
+        run: python etl/run_etl.py
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
+      - name: Run pytest suite
+        run: pytest tests/ -v
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
