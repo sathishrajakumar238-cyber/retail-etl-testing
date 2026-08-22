@@ -41,6 +41,12 @@ jobs:
           DB_USER: postgres
           DB_PASSWORD: postgres
           DB_HOST: localhost
+      - name: Populate dim_date
+        run: python etl/populate_dim_date.py
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
       - name: Run ETL
         run: python etl/run_etl.py
         env:
