@@ -22,7 +22,10 @@ Maps each requirement to its automated test, ensuring full coverage of the ETL p
 | Scenario ID | Description | Feature File | Status |
 |---|---|---|---|
 | BDD-001 | Order counts match between source and warehouse after ETL run | features/reconciliation.feature | Pass |
-
+| BDD-002 | Customer address change creates a historical record | features/scd2.feature | Pass |
+| BDD-003 | Only one current record exists per customer | features/scd2.feature | Pass |
+| BDD-004 | Sales totals are calculated correctly (quantity x unit price) | features/data_quality.feature | Pass |
+| BDD-005 | No orphaned records exist in the warehouse (valid product and customer references) | features/data_quality.feature | Pass |
 ## Known Issues Found and Resolved
 
 | Issue | Root Cause | Resolution |
