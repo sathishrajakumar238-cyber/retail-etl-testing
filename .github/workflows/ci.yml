@@ -64,3 +64,8 @@ jobs:
           DB_PASSWORD: postgres
           DB_HOST: localhost
       - name: Run pytest suite
+        run: pytest tests/ -v
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
