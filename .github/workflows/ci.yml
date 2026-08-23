@@ -53,9 +53,14 @@ jobs:
           DB_USER: postgres
           DB_PASSWORD: postgres
           DB_HOST: localhost
-      - name: Run pytest suite
-        run: pytest tests/ -v
+      - name: Simulate customer address change
+        run: psql -h localhost -U postgres -d retail_source -c "UPDATE customers SET address = '15 Test Avenue', city = 'Limerick' WHERE customer_id = 1;"
+        env:
+          PGPASSWORD: postgres
+      - name: Run ETL again to trigger SCD2
+        run: python etl/run_etl.py
         env:
           DB_USER: postgres
           DB_PASSWORD: postgres
           DB_HOST: localhost
+      - name: Run pytest suite
