@@ -1,14 +1,14 @@
 # Retail ETL Testing Project
 
-An end-to-end ETL pipeline and automated test suite built to validate a retail sales data warehouse ? covering source-to-target reconciliation, transformation logic, and Slowly Changing Dimension (SCD Type 2) history tracking.
+An end-to-end ETL pipeline and automated test suite built to validate a retail sales data warehouse - covering source-to-target reconciliation, transformation logic, and Slowly Changing Dimension (SCD Type 2) history tracking.
 
 ## Problem Statement
 
-A retail company's sales data lives in a transactional source system. This project builds an ETL pipeline that extracts, transforms, and loads that data into a star-schema data warehouse ? while preserving full historical accuracy for customer data using SCD Type 2 ? and validates every step with an automated test suite.
+A retail company's sales data lives in a transactional source system. This project builds an ETL pipeline that extracts, transforms, and loads that data into a star-schema data warehouse, while preserving full historical accuracy for customer data using SCD Type 2, and validates every step with an automated test suite.
 
 ## Entity Relationship Diagram
 
-\\\mermaid
+```mermaid
 erDiagram
     dim_customer {
         int customer_key PK
@@ -53,33 +53,29 @@ erDiagram
     dim_customer ||--o{ fact_sales : "has"
     dim_product ||--o{ fact_sales : "has"
     dim_date ||--o{ fact_sales : "has"
-\\\
+```
 
 ## Architecture
 
-Source (Postgres: customers, products, orders)
-  -> Python ETL (extract.py, transform.py, run_etl.py)
-  -> Data Warehouse (Postgres star schema)
-  -> Automated tests (pytest + behave)
-  -> CI/CD (GitHub Actions)
+Source (Postgres: customers, products, orders) leads to Python ETL leads to Data Warehouse (Postgres star schema) leads to Automated tests (pytest and behave) leads to CI/CD (GitHub Actions)
 
 ## Key Features
 
-- **SCD Type 2** implementation for customer history tracking
-- **12 automated pytest tests** covering reconciliation, referential integrity, transformation logic, and SCD2 behavior
-- **BDD/Gherkin scenarios** using behave for business-readable test cases
-- **CI/CD pipeline** via GitHub Actions running the full suite on every push
+- SCD Type 2 implementation for customer history tracking
+- 12 automated pytest tests covering reconciliation, referential integrity, transformation logic, and SCD2 behavior
+- BDD/Gherkin scenarios using behave for business-readable test cases
+- CI/CD pipeline via GitHub Actions running the full suite on every push
 
 ## How to Run
 
-1. Set up PostgreSQL and create two databases: \etail_source\, \etail_dw\
-2. Run the SQL scripts in \sql/\ to create the schemas
-3. \pip install -r requirements.txt\
-4. \python data/generate_source_data.py\
-5. \python etl/populate_dim_date.py\
-6. \python etl/run_etl.py\
-7. \pytest tests/ -v\
-8. \ehave features/\
+1. Set up PostgreSQL and create two databases: retail_source, retail_dw
+2. Run the SQL scripts in sql/ to create the schemas
+3. pip install -r requirements.txt
+4. python data/generate_source_data.py
+5. python etl/populate_dim_date.py
+6. python etl/run_etl.py
+7. pytest tests/ -v
+8. behave features/
 
 ## Test Coverage
 
